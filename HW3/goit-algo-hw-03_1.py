@@ -24,6 +24,57 @@ import os
 import shutil
 import argparse
 
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Copy and sort files based on their extensions.')
     parser.add_argument('source_dir', type=str, help='Path to the source directory.')
+    parser.add_argument('destination_dir', type=str, nargs='?', default='dist',
+                        help='Path to the destination directory (default:dist).')
+    return parser.parse_args()
+
+
+def create_directory(path):
+    try:
+        os.makedirs(path, exist_ok=True)
+    except OSError as error:
+        print(f'Error creating directory {path}: {error}')
+        raise
+
+
+def copy_and_sort_files(source_dir, destination_dir):
+    try:
+        for entry in os.scandir(source_dir):
+            if entry.is_dir():
+                copy_and_sort_files(entry.path, destination_dir)
+            elif entry.is_file():
+                file_extension = os.path.splitext(entry.name)[1].lower()
+                if file_extension:
+                    target_dir = os.path.join(destination_dir, file_extension[1:])
+                else:
+                    target_dir = os.path.join(destination_dir, 'no extension')
+                create_directory(target_dir)
+
+                try:
+                    shutil.copy2(entry.path, target_dir)
+                    print(f'Copied {entry.path} to {target_dir}')
+                except IOError as error:
+                    print(f'Error copying file {entry.path} to {target_dir}: {error}')
+    except Exception as error:
+        print(f'Error processing directory {source_dir}: {error}')
+        raise
+
+
+def main():
+    args = parse_arguments()
+    source_dir = args.source_dir
+    destination_dir = args.destination_dir
+
+    if not os.path.exists(source_dir):
+        print(f'Source directory {source_dir} does not exist.')
+        return
+    create_directory(destination_dir)
+    copy_and_sort_files(source_dir, destination_dir)
+
+
+if __name__ == '__main__':
+    main()
