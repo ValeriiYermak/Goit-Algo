@@ -41,7 +41,7 @@ start_time = time.time()
 print("Greedy Algorithm Result:", find_coins_greedy(amount))
 # Calculate and display time
 finished_time = time.time() - start_time
-print(f"Tame taken for calculating greedy algorithm: {finished_time:.16f} seconds")
+print(f"Time taken for calculating greedy algorithm: {finished_time:.16f} seconds")
 
 
 def find_min_coins(amount):
@@ -70,6 +70,4 @@ print()
 print("Dynamic Programming Algorithm Result:", find_min_coins(amount))
 # Calculate and display time
 finished_time1 = time.time() - start_time1
-print(
-    f"Tame taken for calculating dynamic programming algorithm: {finished_time1:.16f} seconds"
-)
+print(f"Time taken for calculating dynamic programming algorithm: {finished_time1:.16f} seconds")
